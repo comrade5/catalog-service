@@ -4,8 +4,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import org.springframework.data.annotation.*;
+import java.time.Instant;
 
+// Spring  Data JPA cannot use Records (Records are immutable), it should work with mutable ones
 public record Book(
+
+        @Id
+        Long id,
 
         @Pattern(
                 regexp = "^([0-9]{10}|[0-9]{13})$",
@@ -24,5 +30,19 @@ public record Book(
         @Positive(
                 message = "The book price must be greater than zero."
         )
-        Double price
-) {}
+        Double price,
+
+        @CreatedDate
+        Instant createdDate,
+
+        @LastModifiedDate
+        Instant lastModifiedDate,
+
+        // Version used for optimistic locking
+        @Version
+        int version
+) {
+        public static Book of(String isbn, String title, String author, Double price) {
+                return new Book(null, isbn, title, author, price, null, null, 0);
+        }
+}
