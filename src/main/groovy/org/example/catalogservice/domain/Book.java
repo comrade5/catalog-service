@@ -32,6 +32,9 @@ public record Book(
         )
         Double price,
 
+        // Optional Field (Some entries in table don't have this field)
+        String publisher,
+
         @CreatedDate
         Instant createdDate,
 
@@ -43,6 +46,9 @@ public record Book(
         int version
 ) {
         public static Book of(String isbn, String title, String author, Double price) {
-                return new Book(null, isbn, title, author, price, null, null, 0);
+                return Book.of(isbn, title, author, price, null);
+        }
+        public static Book of(String isbn, String title, String author, Double price, String publisher) {
+                return new Book(null, isbn, title, author, price, publisher, null, null, 0);
         }
 }
